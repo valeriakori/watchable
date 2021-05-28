@@ -12,7 +12,7 @@
           <div class="search-results aesthetic-windows-xp-dropdown">
             <ul
               class="aesthetic-windows-xp-dropdown-menu"
-              :class="{ 'is-active': moviesAPI.length > 0 }"
+              :class="{ 'is-active': moviesAPI.length }"
             >
               <li
                 class="aesthetic-windows-xp-dropdown-menu-item"
@@ -37,9 +37,13 @@
       :key="list.name"
       :category="list.name"
       :movies="moviesDB"
+      @clickMovie="selectMovie"
     />
 
-    <MovieModal />
+    <MovieModal
+      v-if="Object.keys(selectedMovie).length"
+      :selectedMovie="selectedMovie"
+    />
   </div>
 </template>
 
@@ -59,110 +63,8 @@ export default {
       searchTerm: "savages",
       moviesDB: [],
       categoriesDB: [],
-      moviesAPI: [
-        {
-          adult: false,
-          backdrop_path: "/s5M7HDcn9QHo9B7EzXXdOIa2oAK.jpg",
-          genre_ids: [80, 18, 53],
-          id: 82525,
-          original_language: "en",
-          original_title: "Savages",
-          overview:
-            "Pot growers Ben and Chon face off against the Mexican drug cartel who kidnapped their shared girlfriend.",
-          popularity: 9.782,
-          poster_path: "/5hVMR5dG2f2EgLETewzwXcRbKpD.jpg",
-          release_date: "2012-07-06",
-          title: "Savages",
-          video: false,
-          vote_average: 6.4,
-          vote_count: 1692,
-        },
-        {
-          adult: false,
-          backdrop_path: "/c0UfOVrWCkh0ItVmDwXyIthoXDl.jpg",
-          genre_ids: [18],
-          id: 8272,
-          original_language: "en",
-          original_title: "The Savages",
-          overview:
-            "A sister and brother face the realities of familial responsibility as they begin to care for their ailing father.",
-          popularity: 8.693,
-          poster_path: "/nY54gSmTOmSXlQpWDB7DWp4u8a7.jpg",
-          release_date: "2007-01-19",
-          title: "The Savages",
-          video: false,
-          vote_average: 6.9,
-          vote_count: 249,
-        },
-        {
-          adult: false,
-          backdrop_path: null,
-          genre_ids: [10751],
-          id: 379731,
-          original_language: "en",
-          original_title: "Little Savages",
-          overview:
-            "Visiting the charming lake town of Culver, a boy genius and his sister race against bullies to find a treasure hidden by an eccentric philanthropist.",
-          popularity: 3.471,
-          poster_path: "/i5lezFRw98uv5xSriZD4S00WkAI.jpg",
-          release_date: "2016-02-02",
-          title: "Little Savages",
-          video: false,
-          vote_average: 5.6,
-          vote_count: 16,
-        },
-        {
-          adult: false,
-          backdrop_path: null,
-          genre_ids: [53, 27],
-          id: 217665,
-          original_language: "en",
-          original_title: "Savages Crossing",
-          overview:
-            "When a sudden flood traps a group of strangers in an outback roadhouse it becomes clear that the threat from within the group is far greater than from raging torrent outside.",
-          popularity: 2.962,
-          poster_path: "/iSMZ4ccraaGwQ2cjUJymGI3zwAV.jpg",
-          release_date: "2011-05-11",
-          title: "Savages Crossing",
-          video: false,
-          vote_average: 3.2,
-          vote_count: 9,
-        },
-        {
-          adult: false,
-          backdrop_path: "/bm1KQsK3Ofu9ibTP87g4EaKj8zq.jpg",
-          genre_ids: [28, 80, 18, 53],
-          id: 86616,
-          original_language: "en",
-          original_title: "The Young Savages",
-          overview:
-            "A district attorney investigates the racially charged case of three teenagers accused of the murder of a blind Puerto Rican boy.",
-          popularity: 3.631,
-          poster_path: "/wwuzTM314iVSqodZxBtYHvUFeBM.jpg",
-          release_date: "1961-05-24",
-          title: "The Young Savages",
-          video: false,
-          vote_average: 6.5,
-          vote_count: 21,
-        },
-        {
-          adult: false,
-          backdrop_path: "/kOV2y0v7LINRnI6GapsO2n2Hedl.jpg",
-          genre_ids: [18, 28],
-          id: 69151,
-          original_language: "en",
-          original_title: "The Cycle Savages",
-          overview:
-            "The leader of a biker gang takes exception to an artist sketching them, so he makes plans to crush the artist's hands.",
-          popularity: 2.096,
-          poster_path: "/i4ObAJszCgOtVFxvqBc6zNTpFfn.jpg",
-          release_date: "1969-08-22",
-          title: "The Cycle Savages",
-          video: false,
-          vote_average: 5.3,
-          vote_count: 8,
-        },
-      ],
+      moviesAPI: [],
+      selectedMovie: {},
     };
   },
   async mounted() {
@@ -227,6 +129,8 @@ export default {
       // add movie to database
       db.collection("movies").add(newMovie);
 
+      this.selectedMovie = newMovie;
+
       //refetch all movies from database
       this.getMoviesDB();
 
@@ -247,6 +151,11 @@ export default {
     },
     closeEverything() {
       this.moviesAPI = [];
+      this.selectedMovie = {};
+    },
+    selectMovie(movie) {
+      this.selectedMovie = movie;
+      console.log("this.selectedMovie: ", this.selectedMovie);
     },
   },
 };

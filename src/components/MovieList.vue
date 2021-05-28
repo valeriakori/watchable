@@ -3,7 +3,7 @@
     <!-- Title Bar -->
     <div class="aesthetic-windows-xp-modal-title-bar">
       <div class="aesthetic-windows-xp-modal-title-bar-text">
-        {{ category }}
+        <h2>{{ category }}</h2>
       </div>
 
       <div class="aesthetic-windows-xp-modal-title-bar-controls">
@@ -19,10 +19,19 @@
     <!-- Content -->
 
     <div class="aesthetic-windows-xp-modal-content">
-      <div>I am the modal content</div>
-      <ul>
-        <li v-for="movie in filteredMovies" :key="movie.title">
-          {{ movie.title }}
+      <ul class="movie-container">
+        <li
+          v-for="movie in filteredMovies"
+          :key="movie.title"
+          v-on:click.stop="$emit('clickMovie', movie)"
+        >
+          <div class="aesthetic-windows-xp-container">
+            <div class="movie-item">
+              <h3>{{ movie.title }}</h3>
+              <img :src="movie.posterSrc" alt="" />
+              <p class="description">{{ movie.description }}</p>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -48,18 +57,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
