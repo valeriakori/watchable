@@ -7,6 +7,10 @@
   padding: 0;
 }
 
+body {
+  height: 100%;
+}
+
 .navigation-bar {
   height: 3rem;
   display: flex;
@@ -20,8 +24,19 @@ h1 {
 }
 
 .input-wrapper {
+  display: flex;
+}
+
+.search-wrapper {
   position: relative;
 }
+
 .search-results {
-  position: absolute;
+  position: absolute !important;
+  top: 25px;
+  left: 0;
+}
+
+.list-container {
+  margin: 2rem 4rem;
 }
