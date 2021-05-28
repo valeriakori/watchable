@@ -221,6 +221,7 @@ export default {
         title: movie.original_title,
         description: movie.overview,
         posterSrc: `https://image.tmdb.org/t/p/w92/${movie.poster_path}`,
+        categories: ["Ohne Kategorie"],
       };
 
       // add movie to database

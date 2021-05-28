@@ -21,7 +21,9 @@
     <div class="aesthetic-windows-xp-modal-content">
       <div>I am the modal content</div>
       <ul>
-        <li v-for="movie in movies" :key="movie.title">{{ movie.title }}</li>
+        <li v-for="movie in filteredMovies" :key="movie.title">
+          {{ movie.title }}
+        </li>
       </ul>
     </div>
   </div>
@@ -33,6 +35,13 @@ export default {
   props: {
     movies: Array,
     category: String,
+  },
+  computed: {
+    filteredMovies() {
+      return this.movies.filter((movie) =>
+        movie.categories.includes(this.category)
+      );
+    },
   },
 };
 </script>
