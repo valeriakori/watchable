@@ -19,7 +19,7 @@
                 v-for="movie in moviesAPI"
                 :key="movie.id"
               >
-                <button @click.prevent="addMovie(movie)">
+                <button @click.stop="addMovie(movie)">
                   {{ movie.title }}
                 </button>
               </li>
@@ -43,6 +43,8 @@
     <MovieModal
       v-if="Object.keys(selectedMovie).length"
       :selectedMovie="selectedMovie"
+      :categories="categoriesDB"
+      :editMode="editMode"
     />
   </div>
 </template>
@@ -65,6 +67,7 @@ export default {
       categoriesDB: [],
       moviesAPI: [],
       selectedMovie: {},
+      editMode: false,
     };
   },
   async mounted() {
@@ -109,15 +112,19 @@ export default {
       //console.log("adding movie ", movie);
 
       // check if movie is already present
-      if (this.moviePresent(movie.id)) {
+      const movieInDB = this.moviePresent(movie.id);
+      if (movieInDB) {
         // if it is open edit modal
         //console.log("Open modal");
+        this.editMode = true;
+        this.selectedMovie = movieInDB;
+        this.moviesAPI = [];
 
         return;
       }
-      console.log("adding new movie");
+      console.log("Movie is not present. Proceed with adding movie");
 
-      // create movie object
+      // create new movie object
       const newMovie = {
         id: movie.id,
         title: movie.original_title,
@@ -125,16 +132,17 @@ export default {
         posterSrc: `https://image.tmdb.org/t/p/w92/${movie.poster_path}`,
         categories: ["Ohne Kategorie"],
       };
-
+      console.log("newMovie :", newMovie);
       // add movie to database
-      db.collection("movies").add(newMovie);
-
+      //db.collection("movies").add(newMovie);
+      this.editMode = false;
       this.selectedMovie = newMovie;
-
+      this.moviesAPI = [];
       //refetch all movies from database
-      this.getMoviesDB();
+      //this.getMoviesDB();
 
       // open editing modal
+      return;
     },
     moviePresent(movieToAddId) {
       console.log("checking presence");
@@ -142,11 +150,9 @@ export default {
       for (let i = 0; i < this.moviesDB.length; i++) {
         if (this.moviesDB[i].id == movieToAddId) {
           console.log("IS present");
-          return true;
+          return this.moviesDB[i];
         }
       }
-      console.log("Movie is not present. Proceed with adding movie");
-
       return false;
     },
     closeEverything() {
@@ -155,7 +161,9 @@ export default {
     },
     selectMovie(movie) {
       this.selectedMovie = movie;
-      console.log("this.selectedMovie: ", this.selectedMovie);
+      this.moviesAPI = [];
+      this.editMode = true;
+      console.log("movie selected: ", this.selectedMovie);
     },
   },
 };

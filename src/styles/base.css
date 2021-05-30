@@ -70,6 +70,7 @@ h1 {
 .movie-item {
   padding: 0.5rem;
   cursor: pointer;
+  min-height: 175px;
 }
 
 .movie-item .description {
