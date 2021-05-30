@@ -86,14 +86,18 @@ export default {
         });
     },
     async getMoviesDB() {
-      const movies = await db.collection("movies").get();
+      const docs = await db.collection("movies").get();
 
-      // movies.forEach((movie) => {
-      //   console.log("movie: ", movie.data());
+      // docs.forEach((movie) => {
+      //   console.log("movie: ", movie.id);
       // });
 
-      const docs = movies.docs.map((doc) => doc.data());
-      this.moviesDB = docs;
+      const movies = docs.docs.map((doc) => {
+        return { ...doc.data(), documentId: doc.id };
+      });
+
+      this.moviesDB = movies;
+
       //console.log("this.moviesDB", this.moviesDB);
     },
     async getCategoriesDB() {

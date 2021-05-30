@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { db } from "@/firebase/firebase.js";
+
 export default {
   props: {
     selectedMovie: Object,
@@ -69,9 +71,13 @@ export default {
     console.log("props :", this.selectedMovie);
   },
   methods: {
-    saveChanges() {
-      console.log("save new movie");
-      console.log("categories: ", this.selectedMovie.categories);
+    async saveChanges() {
+      await db
+        .collection("movies")
+        .doc(this.selectedMovie.documentId)
+        .update(this.selectedMovie);
+
+      //console.log("docRef :", docRef.data());
     },
     saveNewMovie() {},
   },
@@ -88,8 +94,6 @@ export default {
 }
 
 .movie-item-modal {
-  /* display: grid; */
-  /* grid-template-columns: 150px 1fr; */
   padding: 1rem;
 }
 .movie-details {
@@ -100,9 +104,6 @@ img {
 }
 h4 {
   margin-top: 15px;
-}
-.categories-container {
-  grid-column: 1/2;
 }
 .categories-container .category-checkbox-container {
   display: flex;
