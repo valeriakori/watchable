@@ -18,25 +18,39 @@
 
     <!-- Content -->
 
-    <div class="aesthetic-windows-xp-modal-content edit-modal-content">
+    <div class="aesthetic-windows-xp-modal-content">
       <div class="aesthetic-windows-xp-container">
-        <div class="movie-item">
-          <img :src="selectedMovie.posterSrc" alt="" />
-          <p class="description">{{ selectedMovie.description }}</p>
+        <div class="movie-item-modal">
+          <div class="movie-details">
+            <img :src="selectedMovie.posterSrc" alt="" />
+            <p class="description">{{ selectedMovie.description }}</p>
+          </div>
           <h4>Filmkategorien</h4>
-          <div class="categories-comtainer">
-            <label
+          <div class="categories-container">
+            <!-- <label v-for="category in categories" :key="category.name" class=""
+              >{{ category.name }}
+              <input type="checkbox" v-model="selectedMovie.categories" />
+              <span class="aesthetic-windows-xp-checkmark"></span>
+            </label> -->
+            <div
               v-for="category in categories"
               :key="category.name"
-              class="aesthetic-windows-xp-checkbox"
-              >{{ category.name }}
-              <input type="checkbox" />
-              <span class="aesthetic-windows-xp-checkmark"></span>
-            </label>
+              class="category-checkbox-container"
+            >
+              <input
+                type="checkbox"
+                :id="category.name"
+                :value="category.name"
+                v-model="selectedMovie.categories"
+              />
+              <label :for="category.name">{{ category.name }}</label>
+            </div>
           </div>
           <div class="actions-container">
-            <button v-if="editMode">Save Changes</button>
-            <button v-else>Save New Movie</button>
+            <button @click.stop="saveChanges" v-if="editMode">
+              Save Changes
+            </button>
+            <button @click.stop="saveNewMovie" v-else>Save New Movie</button>
           </div>
         </div>
       </div>
@@ -54,21 +68,51 @@ export default {
   mounted() {
     console.log("props :", this.selectedMovie);
   },
+  methods: {
+    saveChanges() {
+      console.log("save new movie");
+      console.log("categories: ", this.selectedMovie.categories);
+    },
+    saveNewMovie() {},
+  },
 };
 </script>
 
 <style lang="css" scoped>
 .edit-modal {
-  margin: 2rem 4rem;
+  margin: 0 auto;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 50px;
+  left: 50px;
+  max-width: 600px;
 }
-.edit-modal-content {
-  display: grid;
-  grid-template-columns: auto 1fr;
+
+.movie-item-modal {
+  /* display: grid; */
+  /* grid-template-columns: 150px 1fr; */
+  padding: 1rem;
 }
-label {
-  display: block;
+.movie-details {
+  display: flex;
+}
+img {
+  margin-right: 5px;
+}
+h4 {
+  margin-top: 15px;
+}
+.categories-container {
+  grid-column: 1/2;
+}
+.categories-container .category-checkbox-container {
+  display: flex;
+}
+
+.category-checkbox-container input {
+  margin-right: 5px;
+}
+
+.actions-container {
+  margin-top: 5px;
 }
 </style>
