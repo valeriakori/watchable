@@ -45,6 +45,10 @@
       :selectedMovie="selectedMovie"
       :categories="categoriesDB"
       :editMode="editMode"
+      @saveChanges="saveChanges"
+      @saveNewMovie="saveNewMovie"
+      @cancel="cancel"
+      @deleteMovie="deleteMovie"
     />
   </div>
 </template>
@@ -75,6 +79,29 @@ export default {
     this.getMoviesDB();
   },
   methods: {
+    async saveNewMovie() {
+      await db.collection("movies").add(this.selectedMovie);
+      this.selectedMovie = {};
+      this.getMoviesDB();
+    },
+    cancel() {
+      this.selectedMovie = {};
+      this.getMoviesDB();
+    },
+    async deleteMovie() {
+      await db.collection("movies").doc(this.selectedMovie.documentId).delete();
+      this.selectedMovie = {};
+      this.getMoviesDB();
+    },
+    async saveChanges() {
+      await db
+        .collection("movies")
+        .doc(this.selectedMovie.documentId)
+        .update(this.selectedMovie);
+      this.getMoviesDB();
+
+      this.selectedMovie = {};
+    },
     async fetchMovies() {
       await fetch(
         `https://api.themoviedb.org/3/search/movie?api_key=${process.env.VUE_APP_API_KEY}&query=${this.searchTerm}`
@@ -134,7 +161,7 @@ export default {
         title: movie.original_title,
         description: movie.overview,
         posterSrc: `https://image.tmdb.org/t/p/w92/${movie.poster_path}`,
-        categories: ["Ohne Kategorie"],
+        categories: [],
       };
       console.log("newMovie :", newMovie);
       // add movie to database

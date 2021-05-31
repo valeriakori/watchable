@@ -21,10 +21,11 @@
     <div class="aesthetic-windows-xp-modal-content">
       <div class="aesthetic-windows-xp-container">
         <div class="movie-item-modal">
-          <div class="movie-details">
-            <img :src="selectedMovie.posterSrc" alt="" />
-            <p class="description">{{ selectedMovie.description }}</p>
-          </div>
+          <img
+            :src="selectedMovie.posterSrc"
+            :alt="`${selectedMovie.title} movie poster`"
+          />
+          <p class="description">{{ selectedMovie.description }}</p>
           <h4>Filmkategorien</h4>
           <div class="categories-container">
             <!-- <label v-for="category in categories" :key="category.name" class=""
@@ -46,11 +47,15 @@
               <label :for="category.name">{{ category.name }}</label>
             </div>
           </div>
-          <div class="actions-container">
-            <button @click.stop="saveChanges" v-if="editMode">
-              Save Changes
+          <div class="actions-container" v-if="editMode">
+            <button v-on:click.stop="$emit('saveChanges')">Save Changes</button>
+            <button v-on:click.stop="$emit('deleteMovie')">Delete Movie</button>
+          </div>
+          <div class="actions-container" v-else>
+            <button v-on:click.stop="$emit('saveNewMovie')">
+              Save New Movie
             </button>
-            <button @click.stop="saveNewMovie" v-else>Save New Movie</button>
+            <button v-on:click.stop="$emit('cancel')">Cancel</button>
           </div>
         </div>
       </div>
@@ -59,8 +64,6 @@
 </template>
 
 <script>
-import { db } from "@/firebase/firebase.js";
-
 export default {
   props: {
     selectedMovie: Object,
@@ -70,17 +73,7 @@ export default {
   mounted() {
     console.log("props :", this.selectedMovie);
   },
-  methods: {
-    async saveChanges() {
-      await db
-        .collection("movies")
-        .doc(this.selectedMovie.documentId)
-        .update(this.selectedMovie);
-
-      //console.log("docRef :", docRef.data());
-    },
-    saveNewMovie() {},
-  },
+  methods: {},
 };
 </script>
 
