@@ -2,6 +2,8 @@
   <div id="app" @click="closeEverything">
     <div class="navigation-bar aesthetic-bg-gradient">
       <h1 class="logo">Watchable</h1>
+      <font-awesome-icon icon="fa-solid fa-baby-carriage" />
+      <i class="fa-solid fa-baby"></i>
       <div class="input-wrapper">
         <div class="search-wrapper">
           <input
@@ -66,7 +68,7 @@ export default {
   },
   data() {
     return {
-      searchTerm: "savages",
+      searchTerm: "",
       moviesDB: [],
       categoriesDB: [],
       moviesAPI: [],
