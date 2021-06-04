@@ -34,24 +34,9 @@
       </div>
     </div>
 
-    <MovieList
-      v-for="list in categoriesDB"
-      :key="list.name"
-      :category="list.name"
-      :movies="moviesDB"
-      @clickMovie="selectMovie"
-    />
+    <MovieList />
 
-    <MovieModal
-      v-if="Object.keys(selectedMovie).length"
-      :selectedMovie="selectedMovie"
-      :categories="categoriesDB"
-      :editMode="editMode"
-      @saveChanges="saveChanges"
-      @saveNewMovie="saveNewMovie"
-      @cancel="cancel"
-      @deleteMovie="deleteMovie"
-    />
+    <MovieModal />
   </div>
 </template>
 
@@ -82,101 +67,19 @@ export default {
   },
   methods: {
     // 2. READ categories from firestore
-    async getCategoriesDB() {
-      const docs = await db.collection("lists").get().docs;
-
-      // categories.forEach((category) => {
-      //   console.log("category: ", category.data());
-      // });
-
-      const categories = docs.map((doc) => doc.data());
-      this.categoriesDB = categories;
-      // console.log("this.moviesDB", this.categoriesDB);
-    },
+    async getCategoriesDB() {},
     // 3. READ movies from database
-    async getMoviesDB() {
-      const docs = await db.collection("movies").get().docs;
-
-      // docs.forEach((movie) => {
-      //   console.log("movie: ", movie.id);
-      // });
-
-      const movies = docs.map((doc) => {
-        return { ...doc.data(), documentId: doc.id };
-      });
-
-      this.moviesDB = movies;
-      //console.log("this.moviesDB", this.moviesDB);
-    },
+    async getMoviesDB() {},
     // 4. READ movies from TMDB
-    async fetchMovies() {
-      await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${process.env.VUE_APP_API_KEY}&query=${this.searchTerm}`
-      )
-        .then((movies) => movies.json())
-        .then((movies) => {
-          this.moviesAPI = movies.results;
-          //console.log(movies);
-        });
-    },
+    async fetchMovies() {},
     // 5. CREATE new movie
-    async addMovie(movie) {
-      // inspect the movie to be added
-      //console.log("adding movie ", movie);
-
-      // check if movie is already present
-      const movieInDB = this.moviePresent(movie.id);
-      if (movieInDB) {
-        // if it is open edit modal
-        //console.log("Open modal");
-        this.editMode = true;
-        this.selectedMovie = movieInDB;
-        this.moviesAPI = [];
-
-        return;
-      }
-      console.log("Movie is not present. Proceed with adding movie");
-
-      // create new movie object
-      const newMovie = {
-        id: movie.id,
-        title: movie.original_title,
-        description: movie.overview,
-        posterSrc: `https://image.tmdb.org/t/p/w92/${movie.poster_path}`,
-        categories: [],
-      };
-
-      //console.log("newMovie :", newMovie);
-
-      // open editing modal
-      this.editMode = false;
-      this.selectedMovie = newMovie;
-      this.moviesAPI = [];
-
-      return;
-    },
-    async saveNewMovie() {
-      await db.collection("movies").add(this.selectedMovie);
-      this.selectedMovie = {};
-      this.getMoviesDB();
-    },
+    async addMovie(movie) {},
+    async saveNewMovie() {},
     //6. UPDATE existing movie
 
-    async saveChanges() {
-      await db
-        .collection("movies")
-        .doc(this.selectedMovie.documentId)
-        .update(this.selectedMovie);
-      this.getMoviesDB();
-
-      this.selectedMovie = {};
-    },
+    async saveChanges() {},
     // 7. DELETE movie
-    async deleteMovie() {
-      await db.collection("movies").doc(this.selectedMovie.documentId).delete();
-      this.selectedMovie = {};
-      this.getMoviesDB();
-    },
+    async deleteMovie() {},
 
     //utility functions
     cancel() {

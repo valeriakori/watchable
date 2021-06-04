@@ -28,11 +28,6 @@
           <p class="description">{{ selectedMovie.description }}</p>
           <h4>Filmkategorien</h4>
           <div class="categories-container">
-            <!-- <label v-for="category in categories" :key="category.name" class=""
-              >{{ category.name }}
-              <input type="checkbox" v-model="selectedMovie.categories" />
-              <span class="aesthetic-windows-xp-checkmark"></span>
-            </label> -->
             <div
               v-for="category in categories"
               :key="category.name"
@@ -65,14 +60,8 @@
 
 <script>
 export default {
-  props: {
-    selectedMovie: Object,
-    categories: Array,
-    editMode: Boolean,
-  },
-  mounted() {
-    console.log("props :", this.selectedMovie);
-  },
+  props: {},
+  mounted() {},
   methods: {},
 };
 </script>

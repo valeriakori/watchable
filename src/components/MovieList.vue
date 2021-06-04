@@ -3,7 +3,7 @@
     <!-- Title Bar -->
     <div class="aesthetic-windows-xp-modal-title-bar">
       <div class="aesthetic-windows-xp-modal-title-bar-text">
-        <h2>{{ category }}</h2>
+        <h2>Filmkategorie</h2>
       </div>
 
       <div class="aesthetic-windows-xp-modal-title-bar-controls">
@@ -19,21 +19,7 @@
     <!-- Content -->
 
     <div class="aesthetic-windows-xp-modal-content">
-      <ul class="movie-container">
-        <li
-          v-for="movie in filteredMovies"
-          :key="movie.title"
-          v-on:click.stop="$emit('clickMovie', movie)"
-        >
-          <div class="aesthetic-windows-xp-container">
-            <div class="movie-item">
-              <h3>{{ movie.title }}</h3>
-              <img :src="movie.posterSrc" alt="" />
-              <p class="description">{{ movie.description }}</p>
-            </div>
-          </div>
-        </li>
-      </ul>
+      <ul class="movie-container"></ul>
     </div>
   </div>
 </template>
@@ -45,16 +31,6 @@ export default {
     movies: Array,
     category: String,
   },
-  computed: {
-    filteredMovies() {
-      return this.movies.filter((movie) =>
-        movie.categories.includes(this.category)
-      );
-    },
-  },
+  computed: {},
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
