@@ -11,8 +11,8 @@
           />
           <div class="search-results aesthetic-windows-xp-dropdown">
             <ul
-              class="aesthetic-windows-xp-dropdown-menu"
-              :class="{ 'is-active': moviesAPI.length }"
+              class="aesthetic-windows-xp-dropdown-menu is-active"
+              v-if="moviesAPI.length"
             >
               <li
                 class="aesthetic-windows-xp-dropdown-menu-item"
