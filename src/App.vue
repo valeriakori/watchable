@@ -2,8 +2,6 @@
   <div id="app" @click="closeEverything">
     <div class="navigation-bar aesthetic-bg-gradient">
       <h1 class="logo">Watchable</h1>
-      <font-awesome-icon icon="fa-solid fa-baby-carriage" />
-      <i class="fa-solid fa-baby"></i>
       <div class="input-wrapper">
         <div class="search-wrapper">
           <input
@@ -83,25 +81,25 @@ export default {
   methods: {
     // 2. READ categories from firestore
     async getCategoriesDB() {
-      const docs = await db.collection("lists").get().docs;
+      const docReferences = await db.collection("lists").get();
 
-      // categories.forEach((category) => {
+      // docReferences.forEach((category) => {
       //   console.log("category: ", category.data());
       // });
 
-      const categories = docs.map((doc) => doc.data());
+      const categories = docReferences.docs.map((doc) => doc.data());
       this.categoriesDB = categories;
       // console.log("this.moviesDB", this.categoriesDB);
     },
     // 3. READ movies from database
     async getMoviesDB() {
-      const docs = await db.collection("movies").get().docs;
+      const docReferences = await db.collection("movies").get();
 
-      // docs.forEach((movie) => {
+      // docReferences.forEach((movie) => {
       //   console.log("movie: ", movie.id);
       // });
 
-      const movies = docs.map((doc) => {
+      const movies = docReferences.docs.map((doc) => {
         return { ...doc.data(), documentId: doc.id };
       });
 
