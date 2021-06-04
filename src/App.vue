@@ -81,29 +81,34 @@ export default {
     this.getMoviesDB();
   },
   methods: {
-    async saveNewMovie() {
-      await db.collection("movies").add(this.selectedMovie);
-      this.selectedMovie = {};
-      this.getMoviesDB();
-    },
-    cancel() {
-      this.selectedMovie = {};
-      this.getMoviesDB();
-    },
-    async deleteMovie() {
-      await db.collection("movies").doc(this.selectedMovie.documentId).delete();
-      this.selectedMovie = {};
-      this.getMoviesDB();
-    },
-    async saveChanges() {
-      await db
-        .collection("movies")
-        .doc(this.selectedMovie.documentId)
-        .update(this.selectedMovie);
-      this.getMoviesDB();
+    // 2. READ categories from firestore
+    async getCategoriesDB() {
+      const docs = await db.collection("lists").get().docs;
 
-      this.selectedMovie = {};
+      // categories.forEach((category) => {
+      //   console.log("category: ", category.data());
+      // });
+
+      const categories = docs.map((doc) => doc.data());
+      this.categoriesDB = categories;
+      // console.log("this.moviesDB", this.categoriesDB);
     },
+    // 3. READ movies from database
+    async getMoviesDB() {
+      const docs = await db.collection("movies").get().docs;
+
+      // docs.forEach((movie) => {
+      //   console.log("movie: ", movie.id);
+      // });
+
+      const movies = docs.map((doc) => {
+        return { ...doc.data(), documentId: doc.id };
+      });
+
+      this.moviesDB = movies;
+      //console.log("this.moviesDB", this.moviesDB);
+    },
+    // 4. READ movies from TMDB
     async fetchMovies() {
       await fetch(
         `https://api.themoviedb.org/3/search/movie?api_key=${process.env.VUE_APP_API_KEY}&query=${this.searchTerm}`
@@ -114,32 +119,7 @@ export default {
           //console.log(movies);
         });
     },
-    async getMoviesDB() {
-      const docs = await db.collection("movies").get();
-
-      // docs.forEach((movie) => {
-      //   console.log("movie: ", movie.id);
-      // });
-
-      const movies = docs.docs.map((doc) => {
-        return { ...doc.data(), documentId: doc.id };
-      });
-
-      this.moviesDB = movies;
-
-      //console.log("this.moviesDB", this.moviesDB);
-    },
-    async getCategoriesDB() {
-      const categories = await db.collection("lists").get();
-
-      // categories.forEach((category) => {
-      //   console.log("category: ", category.data());
-      // });
-
-      const docs = categories.docs.map((doc) => doc.data());
-      this.categoriesDB = docs;
-      // console.log("this.moviesDB", this.categoriesDB);
-    },
+    // 5. CREATE new movie
     async addMovie(movie) {
       // inspect the movie to be added
       //console.log("adding movie ", movie);
@@ -165,17 +145,43 @@ export default {
         posterSrc: `https://image.tmdb.org/t/p/w92/${movie.poster_path}`,
         categories: [],
       };
-      console.log("newMovie :", newMovie);
-      // add movie to database
-      //db.collection("movies").add(newMovie);
+
+      //console.log("newMovie :", newMovie);
+
+      // open editing modal
       this.editMode = false;
       this.selectedMovie = newMovie;
       this.moviesAPI = [];
-      //refetch all movies from database
-      //this.getMoviesDB();
 
-      // open editing modal
       return;
+    },
+    async saveNewMovie() {
+      await db.collection("movies").add(this.selectedMovie);
+      this.selectedMovie = {};
+      this.getMoviesDB();
+    },
+    //6. UPDATE existing movie
+
+    async saveChanges() {
+      await db
+        .collection("movies")
+        .doc(this.selectedMovie.documentId)
+        .update(this.selectedMovie);
+      this.getMoviesDB();
+
+      this.selectedMovie = {};
+    },
+    // 7. DELETE movie
+    async deleteMovie() {
+      await db.collection("movies").doc(this.selectedMovie.documentId).delete();
+      this.selectedMovie = {};
+      this.getMoviesDB();
+    },
+
+    //utility functions
+    cancel() {
+      this.selectedMovie = {};
+      this.getMoviesDB();
     },
     moviePresent(movieToAddId) {
       console.log("checking presence");
@@ -196,7 +202,7 @@ export default {
       this.selectedMovie = movie;
       this.moviesAPI = [];
       this.editMode = true;
-      console.log("movie selected: ", this.selectedMovie);
+      //console.log("movie selected: ", this.selectedMovie);
     },
   },
 };
